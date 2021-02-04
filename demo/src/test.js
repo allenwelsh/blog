@@ -1,0 +1,337 @@
+//属性是否存在：in 运算符
+// var obj = { p: 1 };
+// console.log(111, 'p' in obj, 'toString' in obj)//====> true true
+
+//hasOwnProperty 判断是否为对象自身的属性
+
+// var obj = {};
+// if ('toString' in obj) {
+//     console.log(obj.hasOwnProperty('toString')) //==> false
+// }
+
+///属性的遍历：for...in 循环
+
+// var obj = { a: 1, b: 2, c: 3 };
+
+// for (var i in obj) {
+//     console.log('键名：', i);
+//     console.log('键值：', obj[i]);
+// }
+
+// 它遍历的是对象所有可遍历（enumerable）的属性，会跳过不可遍历的属性。
+// 它不仅遍历对象自身的属性，还遍历继承的属性。
+
+var a = {};
+console.log(a.prototype); //undefined
+console.log(a.__proto__); //Object {}
+
+// var b = function () { return 1 }
+// var a = new b();
+// var c = new Function();
+// var d = {};
+
+// console.log(0, d.prototype)
+
+// console.log(0, d.__proto__, d.__proto__ === Object.prototype)
+
+// console.log(0, d.__proto__.__proto__)
+
+// console.log(111, a)
+// console.log(222, a.__proto__ === b.prototype)
+
+// console.log(3, c.__proto__ === Function.prototype)
+// console.log(3, c.prototype)
+// console.log(3, b.prototype)
+// console.log(31, b.__proto__,b.__proto__===Function.prototype,b.__proto__===Object.prototype)
+// console.log(3, c.prototype === b.prototype)
+
+// console.log(b.__proto__ === Function.prototype);  //b {}
+// console.log(b.__proto__, b.prototype, Function.prototype === Object.__proto__, Function.__proto__ === Function.prototype);  //function() {}
+
+// console.log(Function.prototype.__proto__ === Object.prototype, Function.__proto__ === Function.prototype);  //function() {}
+
+// Object instanceof Function // true
+// Function instanceof Object // true
+
+// function doSomething(){}
+// doSomething.prototype.foo = "bar"; // add a property onto the prototype
+// var doSomeInstancing = new doSomething();
+// doSomeInstancing.prop = "some value"; // add a property onto the object
+// console.log( doSomeInstancing,doSomeInstancing.foo );
+
+// function createIncrementor(start) {
+//     return function () {
+//         console.log(111,start)
+//       return start++;
+//     };
+//   }
+
+//   var inc = createIncrementor(5);
+
+//   inc() // 5
+//   inc() // 6
+//   inc() // 7
+
+// var fn = function () {
+//   alert(100);
+// };
+// fn.a = 10;
+// fn.b = function () {
+//   alert(123);
+// };
+// fn.c = {
+//   name: "王福朋",
+//   year: 1988
+// };
+
+// console.log(fn.b())
+
+// var a = 10;
+
+// function b(fn) {
+//   var a = 20;
+//   fn()
+// }
+
+// b(f)
+
+// function f() {
+//   console.log(a)
+
+// }
+
+// function Fo(name){
+//    this.name = name
+//    console.log(111,this)
+// }
+//  let f = new Fo(1)
+
+//  Fo(2);
+
+// function Person(name,age){
+//    this.name = name;
+//    this.age = age
+// }
+
+//  function _new(/* 构造函数 */ constructor, /* 构造函数参数 */ params) {
+//    //  console.log(arguments,arguments.length,arguments[0], arguments instanceof Array)
+//    // 将 arguments 对象转为数组
+//    var args = [].slice.call(arguments);
+//    // 取出构造函数
+//    var constructor = args.shift();
+//    // 创建一个空对象，继承构造函数的 prototype 属性
+//    var context = Object.create(constructor.prototype);
+//    //var context = new Object();
+//    // context_[[Prototype]] = constructor.prototype
+//    // 执行构造函数
+//    var result = constructor.apply(context, args);
+//    // 如果返回结果是对象，就直接返回，否则返回 context 对象
+//    return (typeof result === 'object' && result != null) ? result : context;
+//  }
+
+//  // 实例
+//  var actor = _new(Person, '张三', 28);
+// console.log(111,actor)
+
+// var Base = function () {
+//    this.a = 2
+// }
+// var o1 = new Base();
+// var o2 = Object.create(Base);
+// console.log(o1.a);
+// console.log(o2);
+
+// if (typeof Object.create !== "function") {
+//    Object.create = function (proto, propertiesObject) {
+//        if (typeof proto !== 'object' && typeof proto !== 'function') {
+//            throw new TypeError('Object prototype may only be an Object: ' + proto);
+//        } else if (proto === null) {
+//            throw new Error("This browser's implementation of Object.create is a shim and doesn't support 'null' as the first argument.");
+//        }
+
+//        if (typeof propertiesObject != 'undefined') {
+//            throw new Error("This browser's implementation of Object.create is a shim and doesn't support a second argument.");
+//        }
+
+//        function F() {}
+//        F.prototype = proto;
+
+//        return new F();
+//    };
+// }
+
+// var Base = function () {
+//    this.a = 2
+// }
+// Base.prototype.a = 3;
+// var o1 = new Base();
+// var o2 = Object.create(Base);
+// console.log(o1.a);
+// console.log(o2.a);
+
+// 比较	new	Object.create
+// 构造函数	保留原构造函数属性	丢失原构造函数属性
+// 原型链	原构造函数prototype属性	原构造函数/（对象）本身
+// 作用对象	function	function和object
+
+// function M1() {
+//    this.hello = 'hello';
+//  }
+//  M1.prototype.a = 1
+
+//  function M2() {
+//    this.world = 'world';
+//  }
+
+//  function S() {
+//    // M1.call(this);
+//    // M2.call(this);
+//  }
+//  console.log(M1.prototype) // 'hello'
+
+//  // 继承 M1
+//  S.prototype = Object.create(M1.prototype);
+//  // 继承链上加入 M2
+//  Object.assign(S.prototype, M2.prototype);
+
+//  // 指定构造函数
+// //  S.prototype.constructor = S;
+
+//  var s = new S();
+//  console.log(s.hello) // 'hello'
+//  console.log(s.world)// 'world'
+//  console.log(s.a)// '1'
+
+// let a = () => {
+//    return new Promise(resolve => {
+//       console.log(22)
+//       resolve(1)
+//    })
+// }
+
+// async function test() {
+//    await a();
+//    console.log(33)
+//    return 2
+// }
+// console.log(test().then(r => {
+//    console.log(r)
+// }))
+// console.log(111)
+
+// function testAsy(x) {
+//    return new Promise(resolve => {
+//       console.log(111);
+//       setTimeout(() => {
+//          console.log(222)
+//          // resolve(x);
+//       }, 3000)
+//    }
+//    )
+// }
+// testAsy(1).then(r=>{
+//    console.log(r)
+// })
+
+// setTimeout(()=>{
+//    console.log("setTimeout4");
+// },2000);
+// async function testAwt() {
+//    let result = await testAsy('hello world');
+//    console.log(result);    // 3秒钟之后出现hello world
+//    console.log('tangj')   // 3秒钟之后出现tangj
+// }
+// testAwt();
+// console.log('tangSir')  //立即输出tangSir
+
+// let b = async function c() {
+//    return await test();
+// }
+
+// test().then(res=>{
+//    console.log(res)
+// })
+
+// function getSomething() {
+//    return "something";
+// }
+
+// async function testAsync() {
+//    return Promise.resolve("hello async");
+// }
+
+// async function test() {
+//    const v1 = await getSomething();
+//    const v2 = await testAsync();
+//    console.log(v1, v2);
+// }
+
+// test();
+
+// setTimeout(()=>{
+//    console.log("setTimeout1");
+//    Promise.resolve().then(data => {
+//        console.log(222);
+//    });
+//    setTimeout(()=>{
+//       console.log("setTimeout4");
+//    });
+//    console.log("setTimeout3");
+
+// });
+// setTimeout(()=>{
+//    console.log("setTimeout2");
+// });
+// Promise.resolve().then(data=>{
+//    console.log(111);
+// });
+// var tmp = 123;
+
+// if (true) {
+//   tmp = 'abc'; // ReferenceError
+//   let tmp;
+// }
+
+class Point {
+  constructor(props) {
+    // ...
+    this.id = props.id;
+  }
+
+  toString() {
+    // ...
+  }
+
+  toValue() {
+    // ...
+  }
+}
+
+function Point2(id) {
+  this.id = id;
+}
+
+Point2.prototype = {
+  toString: function () {
+    // ...
+  },
+  toValue: function () {
+    // ...
+  },
+};
+
+let p1 = new Point({ id: 1 });
+let p2 = new Point2(1);
+
+console.log(p1.hasOwnProperty("id"));
+console.log(p2.hasOwnProperty("id"));
+
+console.log(p1.hasOwnProperty("toString"));
+console.log(p2.hasOwnProperty("toString"));
+
+// console.log(Point.prototype)
+
+// console.log(Object.keys(Point.prototype))
+// console.log(Object.keys(Point2.prototype))
+
+// Point.prototype.constructor === Point
