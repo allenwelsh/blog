@@ -14,12 +14,10 @@ echo "git status"
 git status
 
 
-echo "git pull "
-git pull origin master
 
 
 echo "git push"
-git push origin  master
+git push origin  main
 
 
 echo "done."
