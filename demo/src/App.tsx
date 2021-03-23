@@ -1,6 +1,7 @@
 import * as React from "react";
 import { Tree, getMirrorTree } from "./Tree";
 import { LinkedList } from "./LinkdedList";
+import "./test.js";
 
 export default class App extends React.Component<any> {
   componentDidMount() {

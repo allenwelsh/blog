@@ -21,9 +21,9 @@
 // 它遍历的是对象所有可遍历（enumerable）的属性，会跳过不可遍历的属性。
 // 它不仅遍历对象自身的属性，还遍历继承的属性。
 
-var a = {};
-console.log(a.prototype); //undefined
-console.log(a.__proto__); //Object {}
+// var a = {};
+// console.log(a.prototype); //undefined
+// console.log(a.__proto__); //Object {}
 
 // var b = function () { return 1 }
 // var a = new b();
@@ -292,42 +292,42 @@ console.log(a.__proto__); //Object {}
 //   let tmp;
 // }
 
-class Point {
-  constructor(props) {
-    // ...
-    this.id = props.id;
-  }
+// class Point {
+//   constructor(props) {
+//     // ...
+//     this.id = props.id;
+//   }
 
-  toString() {
-    // ...
-  }
+//   toString() {
+//     // ...
+//   }
 
-  toValue() {
-    // ...
-  }
-}
+//   toValue() {
+//     // ...
+//   }
+// }
 
-function Point2(id) {
-  this.id = id;
-}
+// function Point2(id) {
+//   this.id = id;
+// }
 
-Point2.prototype = {
-  toString: function () {
-    // ...
-  },
-  toValue: function () {
-    // ...
-  },
-};
+// Point2.prototype = {
+//   toString: function () {
+//     // ...
+//   },
+//   toValue: function () {
+//     // ...
+//   },
+// };
 
-let p1 = new Point({ id: 1 });
-let p2 = new Point2(1);
+// let p1 = new Point({ id: 1 });
+// let p2 = new Point2(1);
 
-console.log(p1.hasOwnProperty("id"));
-console.log(p2.hasOwnProperty("id"));
+// console.log(p1.hasOwnProperty("id"));
+// console.log(p2.hasOwnProperty("id"));
 
-console.log(p1.hasOwnProperty("toString"));
-console.log(p2.hasOwnProperty("toString"));
+// console.log(p1.hasOwnProperty("toString"));
+// console.log(p2.hasOwnProperty("toString"));
 
 // console.log(Point.prototype)
 
@@ -335,3 +335,157 @@ console.log(p2.hasOwnProperty("toString"));
 // console.log(Object.keys(Point2.prototype))
 
 // Point.prototype.constructor === Point
+
+//call 和 apply
+// var a = {
+//   b: 1,
+//   show: function (d) {
+//     console.log(111, d, this.b);
+//   },
+// };
+
+// var b = {
+//   b: 5,
+// };
+
+// Function.prototype.myCall = function (context) {
+//   context.fn = this; //1.将函数挂载到传入的对象
+//   console.log(111, this);
+//   var arg = [...arguments].splice(1); //2.取参数
+//   context.fn(...arg); //3.执行对象的方法
+//   delete context.fn; //4.移除对象的方法
+// };
+
+// // a.show.myCall(b);
+// function myCall(fn, obj) {
+//   obj.fn = fn;
+//   var arg = [...arguments].splice(2);
+//   var result = obj.fn(arg);
+//   delete obj.fn;
+//   return result;
+// }
+// myCall(a.show, b, "111");
+
+// 继承
+
+// function Father() {
+//   this.a = 1;
+// }
+// Father.prototype.show = function () {
+//   console.log(this.a);
+//   console.log(this.s);
+// };
+
+// function Son() {
+//   this.s = 2;
+// }
+// console.log(11111, new Father());
+
+// Son.prototype = new Father();
+// // Son.prototype = Father.prototype;
+
+// Son.prototype.constructor = Son;
+
+// var son1 = new Son();
+// son1.show();
+
+// class PromiseA {
+//   constructor(exector) {
+//     // super();
+//     this.state = "PENDING";
+//     this.value = undefined;
+//     this.reson = undefined;
+//     // 存放成功的回调
+//     this.onResolvedCallbacks = [];
+//     // 存放失败的回调
+//     this.onRejectedCallbacks = [];
+//     const resolve = (value) => {
+//       this.value = value;
+//       if (this.state === "PENDING") {
+//         this.onResolvedCallbacks.forEach((fn) => fn());
+//       }
+//       this.state = "DONE";
+//     };
+//     const reject = (reason) => {
+//       this.state = "FAIL";
+//       this.reson = reason;
+//     };
+//     exector(resolve, reject);
+//   }
+//   then(sCb, fCb) {
+//     // callBack(this.value);
+//     if (this.state === "PENDING") {
+//       this.onResolvedCallbacks.push(() => {
+//         sCb(this.value);
+//       });
+//       this.onRejectedCallbacks.push(() => {
+//         fCb(this.reason);
+//       });
+//     } else if (this.state === "FAIL") {
+//       fCb(this.reson);
+//     } else if (this.state === "DONE") {
+//       sCb(this.value);
+//     }
+//   }
+// }
+
+// let aPromise = new PromiseA(function (resolve, rejec) {
+//   // resolve(1);
+//   setTimeout(() => {
+//     resolve(1);
+//   }, 1000);
+// });
+
+// aPromise.then((res) => {
+//   console.log(111, res);
+// });
+// console.log(111, aPromise);
+
+// function debounce(fn, wait = 100) {
+//   let timer = null; //闭包
+//   return function (...arg) {
+//     if (timer) {
+//       clearTimeout(timer);
+//     }
+//     let me = this;
+//     setTimeout(() => {
+//       fn.apply(me, arg);
+//     }, wait);
+//   };
+// }
+
+// debounce(() => {
+//   console.log(111, "开始执行");
+// }, 100);
+
+// function throttle(fn, wait = 100) {
+//   let start = 0;
+//   return function (...arg) {
+//     let me = this;
+//     let now = new Date().getTime();
+//     if (now - start > wait) {
+//       fn.apply(me, arg);
+//       start = new Date().getTime();
+//     }
+//   };
+// }
+
+function deepClone(source, target) {
+  // let type = Object.prototype.toString.call(targetObj);
+  if (typeof source === Object && source !== null) {
+    if (Array.isArray(source)) {
+      source.forEach((val, index) => {
+        let item = undefined;
+        deepClone(val, item);
+        target.push(item);
+      });
+    }
+    if (source instanceof Object) {
+      for (let key in source) {
+        target[key] = deepClone(source[key]);
+      }
+    }
+  } else {
+    target = source;
+  }
+}

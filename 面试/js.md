@@ -264,3 +264,343 @@ a= 10;
 typeof a; //number
 console.log(typeof a)
 ```
+
+---
+
+- 手写一个 apply 函数
+
+思路：
+1、获取到需要处理的函数
+2、将目标函数绑定到目标对象上；
+3、获取参数
+4、执行该目标对象的函数；
+5、释放删除该函数 ；
+
+```
+方法1:
+
+Function.prototype.myApply = function (context) {
+  context.fn = this; //1.将函数挂载到传入的对象
+  console.log(111, this);
+  var arg = [...arguments].splice(1); //2.取参数
+  context.fn(...arg); //3.执行对象的方法
+  delete context.fn; //4.移除对象的方法
+};
+
+```
+
+```
+方法2:
+
+function myApply(fn, obj) {
+  obj.fn = fn;
+  var arg = [...arguments].splice(2);
+  var result = obj.fn(...arg);
+  delete obj.fn;
+  return result;
+}
+
+```
+
+---
+
+- 手写一个 call 函数
+
+  基本思路与 apply 一样，差异在于 call 获取参数的时候，var arg = [...arguments].splice(1)[0],且 arg 本身必须是数组
+
+---
+
+- 手写一个继承
+
+```
+function Father() {
+  this.f = 1;
+}
+Father.prototype.show = function () {
+  console.log(this.f);
+  console.log(this.s);
+};
+
+```
+
+方法一：Son 的 prototype 指向 Father.prototype，同时将 Son.prototype.constructor 指向 Son。
+
+```
+Son.prototype = Father.prototype;
+Son.prototype.constructor = Son;
+
+
+此时Son无法继承Father的属性
+
+```
+
+方法二：Son 的 prototype 指向 new Fathe(), Son.prototype.constructor 指向 Son。
+
+```
+Son.prototype = new Father();//Son.prototype.__proto__ = Father.prototype
+Son.prototype.constructor = Son;
+
+```
+
+对象继承
+方法三：
+
+```
+var father = {
+  a:1,
+  b:2,
+  show:function(){
+    console.log(this.a)
+  }
+}
+
+Son.prototype = father;
+Son.prototype.constructor = Son;
+
+```
+
+---
+
+- 手写一个 new
+
+思路：1、对照工厂模式和构造函数，首先需要创建一个对象，其实需要返回这个对象；
+2、需要继承构建函数的 prototype
+3、改变 this 指向，同时绑定属性
+4、返回对象
+
+```
+- 工厂模式
+
+function f (a,b){
+   var obj = {};
+    obj.a = a;
+    obj.b = b;
+    obj.show = funcion(){
+      console.log(obj.a)
+    }
+    return obj;
+}
+
+- 构造函数
+
+function C (a,b){
+   this.a = a;
+   this.b = b;
+   this.show = funcion(){
+      console.log(this.a)
+    }
+
+}
+
+C.prototype.s= 2;
+
+
+- new
+
+function myNew(obj,...ret){
+
+  var newObj = Object.create(obj.prototype);
+  var result = obj.apply(newObj, rest);
+  return typeof result === 'object' ? result : newObj;
+
+}
+
+
+function myNew () {
+  //创建一个新对象
+  let obj  = {};
+  //获得构造函数
+  let Con = [].shift.call(arguments);
+  //链接到原型（给obj这个新生对象的原型指向它的构造函数的原型）
+  obj.__proto__ = Con.prototype;
+  //绑定this
+  let result = Con.apply(obj,arguments);
+  //确保new出来的是一个对象，因为Con执行的结果会返回当前实例
+  return typeof result === "object" ? result : obj
+}
+
+```
+
+---
+
+- 手写一个 create 实现
+
+  Object.create()方法创建一个新对象，使用现有的对象来提供新创建的对象的**proto**。
+
+思路：
+1、需要首先创建一个空对象
+2、这个空对象的**proto**指向现有的对象
+3、返回对象
+
+```
+ function create (proto){
+    function F() {}
+    F.prototype = proto;
+    return new F();
+ }
+
+ 或者
+ function create (obj) {
+    var B={};
+    B.__proto__=obj;
+    return B;
+};
+
+```
+
+---
+
+- 手写一个 extends 实现
+
+1、ES6 的类主要是通过 constructor 来实现构造函数的，如果不用 constructor 写成 class B{name = 'wxp'}也是可以的,但是这样就没法传参，所以可以理解为 constructor 的作用主要是用来供实例对象传参的。
+
+2.以上 A 类在实现 B 类的函数体内除了 constructor 还有个 super 的调用，这个 super 的调用主要用来执行 B 类，也就是父类的构造函数。因为 A 类继承 B 类，所以必将会用到 B 类的属性或方法，如果 B 类也需要传参，那么 super 就提供了一个传参入口
+
+```
+function B(name){
+  this.name = name;
+};
+function A(name,age){
+  //1.将A的原型指向B
+  _extends(A,B);
+  //2.用A的实例作为this调用B,得到继承B之后的实例，这一步相当于调用super
+  getPrototypeOf(A).call(this, name)
+  //3.将A原有的属性添加到新实例上
+  this.age = age;
+  //4.返回新实例对象
+  return this;
+};
+function _extends(A,B){
+   A.prototype.__proto__= B.prototype;
+   A.prototype.constructor = A;
+   Object.setPrototypeOf(A,B);
+};
+var a = new A('wxp',18);
+console.log(a);{name:'wxp',age:18}
+```
+
+- 手写一个 super 实现
+<!-- https://segmentfault.com/a/1190000015565616 -->
+
+---
+
+- 手写一个 promise
+
+```
+class PromiseA {
+  constructor(exector) {
+    // super();
+    this.state = "PENDING";
+    this.value = undefined;
+    this.reson = undefined;
+    // 存放成功的回调
+    this.onResolvedCallbacks = [];
+    // 存放失败的回调
+    this.onRejectedCallbacks = [];
+    const resolve = (value) => {
+      this.value = value;
+      if (this.state === "PENDING") {
+        this.onResolvedCallbacks.forEach((fn) => fn());
+      }
+      this.state = "DONE";
+    };
+    const reject = (reason) => {
+      this.state = "FAIL";
+      this.reson = reason;
+    };
+    exector(resolve, reject);
+  }
+  then(sCb, fCb) {
+    // callBack(this.value);
+    if (this.state === "PENDING") {
+      this.onResolvedCallbacks.push(() => {
+        sCb(this.value);
+      });
+      this.onRejectedCallbacks.push(() => {
+        fCb(this.reason);
+      });
+    } else if (this.state === "FAIL") {
+      fCb(this.reson);
+    } else if (this.state === "DONE") {
+      sCb(this.value);
+    }
+  }
+}
+```
+
+- 手写一个 jsonp
+
+思路：
+1、需要一个全局回调函数，执行当请求通过 script 标签返回的回调；
+2、需要一个发送 script 的请求；
+3、服务端拼装返回的 script 脚本；
+
+```
+回调函数：
+
+function callback(data) {
+  alert(data.message);
+}
+
+发送script 的请求：
+
+ function addScriptTag(src){
+       var script = document.createElement('script');
+       script.setAttribute("type","text/javascript");
+       script.src = src;
+       document.body.appendChild(script);
+  }
+
+服务器端执行并返回script 脚本：
+
+callback({
+  id:1
+})
+
+
+```
+
+- 手写一个防抖
+
+  思路：何谓防抖，就是防止在没有准备好之前提前触发了，其实就是在一段时间内如果重复触发的话只执行最后一次
+
+```
+function debounce(fn, wait = 100) {
+  let timer = null; //闭包
+  return function (...arg) {
+    if (timer) {
+      clearTimeout(timer);
+    }
+    let me = this;
+    setTimeout(() => {
+      fn.apply(me, arg);
+    }, wait);
+  };
+}
+
+```
+
+---
+
+- 手写一个截流
+
+  思路：何谓节流，就是当一个操作连续触发时，控制触发的频率，即每一次触发间隔不能超过一定时间
+
+```
+function throttle(fn, wait = 100) {
+  let start = 0;
+  return function (...arg) {
+    let me = this;
+    let now = new Date().getTime();
+    if (now - start > wait) {
+      fn.apply(me, arg);
+      start = new Date().getTime();
+    }
+  };
+}
+
+```
+
+---
+
+- 写一个深拷贝，考虑 正则，Date 这种类型的数据

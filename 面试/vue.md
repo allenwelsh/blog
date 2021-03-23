@@ -71,3 +71,21 @@ export default {
 4、从新挂载组件不会触发生命周期
 
 https://www.cnblogs.com/chanwahfung/p/13523396.html
+
+---
+
+3、vue 生命周期
+
+- 在 vue 中 mounted、updated 不会承诺所有的子组件也都一起被挂载。如果你希望等到整个视图都渲染完毕，可以用 vm.$nextTick 替换掉 mounted、updated
+- 在 react 中
+
+```
+Parent constructor
+Parent componentWillMount
+Parent render
+Child constructor
+Child componentWillMount
+Child render
+Child componentDidMount
+Parent componentDidMount
+```
