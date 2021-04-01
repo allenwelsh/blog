@@ -604,3 +604,51 @@ function throttle(fn, wait = 100) {
 ---
 
 - 写一个深拷贝，考虑 正则，Date 这种类型的数据
+
+## [手写代码](-https://wangyaxing.cn/blog/jsCode/)
+
+---
+
+- 区分数组遍历方式
+  目标：let arr = [1,2,3,4,5]
+
+1. for 语句 可以使用 break 跳出循环，continue 跳出当前循环，不能使用 return
+
+```
+for (let i = 0; let len = arr.length;i<len;i++){
+
+}
+```
+
+2. forEach 不能使用使用 break 和 continue 跳出循环，可以使用 return 跳出本次循环
+
+```
+  arr.forEach((v,k)=>{
+      console.log(v);
+      console.log(k);
+  })
+
+```
+
+3. for in 主要是对对象进行遍历，会遍历继承的可遍历属性，可以使用 break 跳出循环，continue 跳出当前循环，不能使用 return
+
+```
+   for(let k in arr){
+      console.log(k);
+      console.log(arr[k]);
+   }
+
+```
+
+4. for of 遍历的是 value，对所有可以迭代的都可以使用,可以使用 break 跳出循环，continue 跳出当前循环
+
+```
+   for(let v of arr){
+      console.log(v);
+   }
+
+```
+
+5. map 会返回一个新的数组
+
+结论：break 能跳出所有 for for/in for/of 循环，但对于 forEach,map,every,some 是不可以的，这些只能跳出本次循环
