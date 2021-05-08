@@ -470,22 +470,121 @@
 //   };
 // }
 
-function deepClone(source, target) {
-  // let type = Object.prototype.toString.call(targetObj);
-  if (typeof source === Object && source !== null) {
-    if (Array.isArray(source)) {
-      source.forEach((val, index) => {
-        let item = undefined;
-        deepClone(val, item);
-        target.push(item);
-      });
-    }
-    if (source instanceof Object) {
-      for (let key in source) {
-        target[key] = deepClone(source[key]);
-      }
-    }
-  } else {
-    target = source;
+// function deepClone(source, target) {
+//   // let type = Object.prototype.toString.call(targetObj);
+//   if (typeof source === Object && source !== null) {
+//     if (Array.isArray(source)) {
+//       source.forEach((val, index) => {
+//         let item = undefined;
+//         deepClone(val, item);
+//         target.push(item);
+//       });
+//     }
+//     if (source instanceof Object) {
+//       for (let key in source) {
+//         target[key] = deepClone(source[key]);
+//       }
+//     }
+//   } else {
+//     target = source;
+//   }
+// }
+//es6
+// class List {
+//   constructor() {}
+
+//   getList() {}
+// }
+
+//es5 -指定一个实列变量
+
+let instance = null;
+
+let List = function (name) {
+  this.name = name;
+};
+
+List.getInstance = function (name) {
+  if (!instance) {
+    instance = new List(name);
   }
+  return instance;
+};
+
+let a = List.getInstance("a");
+let b = List.getInstance("b");
+console.log(a === b);
+
+//es5 -使用构造函数的静态变量
+
+let List = function (name) {
+  this.name = name;
+};
+
+List.getInstance = function (name) {
+  if (!this.instance) {
+    //等价于List.instance
+    this.instance = new List(name); //此时this指向List本身
+  }
+  return this.instance;
+};
+let a = List.getInstance("a");
+let b = List.getInstance("b");
+console.log(a === b);
+
+//es6 -使用class
+
+class List {
+  constructor(name) {
+    this.name = name;
+    if (!List.instance) {
+      List.instance = this; //this就是第一次创建的实列
+    }
+    return List.instance;
+  }
+}
+
+let a = new List("a");
+let b = new List("b");
+console.log(a === b);
+
+//es6 -使用class
+
+class List {
+  constructor(name) {
+    if (!List.instance) {
+      List.instance = this; //this就是第一次创建的实列
+    }
+    return List.instance;
+  }
+}
+
+let a = new List("a");
+let b = new List("b");
+console.log(a === b);
+
+//es6 -使用class
+
+class List {
+  constructor(name) {
+    this.name = name;
+  }
+  static getInstance(name) {
+    if (!List.instance) {
+      List.instance = new List(name);
+    }
+    return List.instance;
+  }
+}
+let a = List.getInstance("a");
+let b = List.getInstance("b");
+console.log(a === b);
+
+function testBb(plus) {
+  let a = 100;
+
+  function add() {
+    return a + plus;
+  }
+  return add;
 }

@@ -560,6 +560,8 @@ callback({
 
 ```
 
+---
+
 - 手写一个防抖
 
   思路：何谓防抖，就是防止在没有准备好之前提前触发了，其实就是在一段时间内如果重复触发的话只执行最后一次
@@ -651,4 +653,125 @@ for (let i = 0; let len = arr.length;i<len;i++){
 
 5. map 会返回一个新的数组
 
-结论：break 能跳出所有 for for/in for/of 循环，但对于 forEach,map,every,some 是不可以的，这些只能跳出本次循环
+## 结论：break 能跳出所有 for for/in for/of 循环，但对于 forEach,map,every,some 是不可以的，这些只能跳出本次循环
+
+- 手写一个单例
+
+```
+  1、es5 -指定一个实列变量
+
+   let instance = null;
+
+    let List = function (name) {
+      this.name = name;
+    };
+
+    List.getInstance = function (name) {
+      if (!instance) {
+        instance = new List(name);
+      }
+      return instance;
+    };
+
+```
+
+```
+  2、es5 -使用构造函数的静态变量
+
+   let List = function (name) {
+      this.name = name;
+    };
+
+    List.getInstance = function (name) {
+      if (!this.instance) {
+        //等价于List.instance
+        this.instance = new List(name); //此时this指向List本身
+      }
+      return this.instance;
+    };
+
+```
+
+```
+  3、es6
+
+   class List {
+      constructor(name) {
+        if (!List.instance) {
+          List.instance = this; //this就是第一次创建的实列
+        }
+        return List.instance;
+      }
+    }
+
+
+```
+
+```
+  4、es6
+
+  class List {
+    constructor(name) {
+      this.name = name;
+    }
+    static getInstance(name) {
+      if (!List.instance) {
+        List.instance = new List(name);
+      }
+      return List.instance;
+    }
+}
+
+
+```
+
+---
+
+- 什么是闭包，手写闭包
+
+闭包本质是关于函数作用域和函数执行时上下文、垃圾回收机制相关
+正常情况下函数内部变量在函数访问退出时销毁，但是如果一个变量被
+子函数访问，则会改变它的回收机制。
+
+常用的闭包场景：单例是最常见的一种闭包
+其次比较常用的用循环绑定事件、绑定 setTimeOut
+
+```
+function testBb(plus) {
+  let a = 100;
+
+  function add() {
+    return a + plus;
+  }
+  return add;
+}
+
+```
+
+---
+
+- 理解代理 Proxy 和 Reflect
+
+常用代理方法有：
+
+```
+get(target, propKey, receiver)
+
+set(target, propKey,value, receiver)
+
+has(target, propKey)
+
+construct(target, args, newTarget)
+
+apply(target, object, args)
+
+
+```
+
+[参考文章](https://juejin.cn/post/6844903971794976775)
+
+[参考文章 2](https://www.cnblogs.com/tugenhua0707/p/10306793.html)
+
+---
+
+- 理解 set 和 map
