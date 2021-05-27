@@ -775,3 +775,157 @@ apply(target, object, args)
 ---
 
 - 理解 set 和 map
+
+set、map、array、object 都是集合
+
+##### Array 和 Set 对比
+
+都是一个存储多值的容器，两者可以互相转换，但是在使用场景上有区别。如下:
+Array 的 indexOf 方法比 Set 的 has 方法效率低下
+Set 不含有重复值（可以利用这个特性实现对一个数组的去重）
+Set 通过 delete 方法删除某个值，而 Array 只能通过 splice。两者的使用方便程度前者更优
+Array 的很多新方法 map、filter、some、every 等是 Set 没有的（但是通过两者可以互相转换来使用）
+
+```
+let set = new Set()
+// Set转化为数组
+let arr = Array.from(set)
+let arr = [...set]
+// 实例属性（继承自Set）
+set.constructor === Set
+set.size
+// 操作方法
+set.add(1) // 添加一个值
+set.delete(1) //删除一个值
+set.has(1) //判断是否有这个值（Array中的indexOf）
+set.clear() //清除所有值
+// 获取用于遍历的成员方法(Set的遍历顺序就是插入顺序)
+set.keys() // 返回键名的遍历器
+set.values() // 返回键值得遍历器
+set.entries() // 返回键值对的遍历器
+set.forEach() // 循环遍历每个值(和Array的方法一致)
+for (let key of set.keys()){}
+for (let val of set.values()){}
+for (let entry of set.entries()){}
+// 使用数组方法来处理set值
+set = new Set(arr)
+set = new Set([...set].map((x) => x = x * 2))
+set = new Set([...set].filter((x) => x > 2))
+```
+
+##### Object 和 Map 对比
+
+Object 是字符串-值，Map 是值-值
+Object 键为 string 类型,Map 的键是任意类型
+手动计算 Object 尺寸,Map.size 可以获取尺寸
+Map 的排序是插入顺序
+Object 有原型，所以映射中有一些缺省的键。可以理解为 Map=Object.create(null)
+ES6 提供了 Map 数据结构。它类似于对象，也是键值对的集合，但是“键”的范围不限于字符串，各种类型的值（包括对象）都可以当作键。也就是说，Object 结构提供了“字符串—值”的对应，Map 结构提供了“值—值”的对应，是一种更完善的 Hash 结构实现。
+
+```
+let map = new Map()
+// 实例属性(继承自Map)
+map.constructor === Map
+map.size
+// 操作方法
+map.set(1,2)
+map.get(1)
+map.delete(1)
+map.has(1)
+map.clear()
+// 遍历方法
+map.keys()
+map.values()
+map.entries()
+map.forEach()
+// Map和数组的转换
+map = new Map([['key','val'],[2,1]]) // 要求双成员数组
+let arr = [...map]
+// 值得注意的是Map的键是跟内存绑定的
+map.set([1], 's')
+map.get([1])
+let arr = [1]
+let arr1 = [1]
+map.set(arr, 's')
+map.get(arr)
+map.set(arr1, 's')
+map.get(arr1)
+```
+
+[set 和 map](https://segmentfault.com/a/1190000016411261)
+
+- 理解尾部调用优化
+
+```
+"use strict";
+// 无优化：尾调用没有返回
+function outerFunction() {
+ innerFunction();
+}
+// 无优化：尾调用没有直接返回
+function outerFunction() {
+ let innerFunctionResult = innerFunction();
+ return innerFunctionResult;
+}
+// 无优化：尾调用返回后必须转型为字符串
+function outerFunction() {
+ return innerFunction().toString();
+}
+// 无优化：尾调用是一个闭包
+function outerFunction() {
+ let foo = 'bar';
+ function innerFunction() { return foo; }
+ return innerFunction();
+}
+```
+
+```
+"use strict";
+// 有优化：栈帧销毁前执行参数计算
+function outerFunction(a, b) {
+ return innerFunction(a + b);
+}
+// 有优化：初始返回值不涉及栈帧
+function outerFunction(a, b) {
+ if (a < b) {
+ return a;
+ }
+ return innerFunction(a + b);
+}
+// 有优化：两个内部函数都在尾部
+function outerFunction(condition) {
+ return condition ? innerFunctionA() : innerFunctionB();
+}
+```
+
+递归优化思路：将运算部分放入参数部分
+
+[尾部优化](https://blog.csdn.net/laoxiaohang/article/details/113482849)
+
+- XSS 攻击： 跨站脚本攻击（Cross Site Script
+  就是注入恶意代码，从而获取用户 cookie 或者伪造登录内容，或者修改也面
+
+  - 攻击方式：
+    反射型
+    存储型
+    基于 DOM 型
+
+  - 防御方式：
+    cookie 设置设置为 httpOnly
+    不相信用户的输入做 html 转义（escapeHTML）
+
+  - XSS 攻击的两大要素：
+    - 用户提交恶意代码
+    - 浏览器执行恶意代码
+
+- CSRF 跨站请求伪造（Cross Site Request Forgery）
+
+  - 用户登录真实 a.html
+  - 引导用户点击 b.html
+  - b.html 会发起访问 a 的请求
+
+  - 防御方式：
+    - 同源（CSRF 大多数情况下来自第三方域名，但并不能排除本域发起。如果攻击者有权限在本域发布评论（含链接、图片等，统称 UGC））
+    - token+cookie
+
+[CSRF](https://juejin.cn/post/6844903689702866952#heading-20)
