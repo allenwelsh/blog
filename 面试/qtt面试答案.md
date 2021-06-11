@@ -316,11 +316,16 @@ let s = new Son("red");
 ```
   function myNew (){
     let obj = {};
-    obj._proto_ = con.prototype;
     let con = arguments[0];//获取构造函数
+    obj._proto_ = con.prototype;
     let resetArguments = [].slice.call(arguments,1);
-    let result = con.apply(obj,...resetArguments);
+    let result = con.apply(obj,resetArguments);
     return typeof result === "object" ? result : obj
   }
 
 ```
+
+#### Q6、常用的设计模式有哪些
+
+A:
+1、常用的设计模式有订阅者、发布者模式、单例模式、代理模式、

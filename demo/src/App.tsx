@@ -1,7 +1,7 @@
 import * as React from "react";
 import { Tree, getMirrorTree } from "./Tree";
 import { LinkedList } from "./LinkdedList";
-import "./test.js";
+import Example from "./hooks/index";
 
 export default class App extends React.Component<any> {
   componentDidMount() {
@@ -28,6 +28,10 @@ export default class App extends React.Component<any> {
   //   console.log(111, tree, getMirrorTree(tree));
   // }
   render() {
-    return <div></div>;
+    return (
+      <div>
+        <Example />
+      </div>
+    );
   }
 }
