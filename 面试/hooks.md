@@ -16,6 +16,7 @@
 - 简化代码逻辑，不需要去关注复杂的生命周期，不需要过分关注 this
 - 函数式组件本质是一个函数，函数每次执行完成后，内部变量是需要出栈回收掉的（除了闭包），那如何保存之前的状态呢，方法就是 hook
 - hooks 本质是一个链表，在每次执行函数组件的时候，会去查询链表赋予变量新的值
+- hook 更好造轮子，尤其是与生命周期相关的轮子（1、不用关注生命周期，逻辑能集中，2、方便在组件销毁时移除副作用）
 
 ##### 3、react 优化
 
@@ -116,6 +117,174 @@ function updateMemo(nextCreate, deps) {
 
 [useMemo 与 useCallback 区别](https://juejin.cn/post/6844904001998176263)
 
+##### 7、 useLayoutEffect
+
+useLayoutEffect 与 useEffect 功能 99%差不多，主要差别是：
+
+1. useLayoutEffect 是同步执行，执行过程中会阻止浏览器渲染；
+2. useEffect 是异步执行，而且是在浏览器渲染完成后执行；
+3. useLayoutEffect 比 useEffect 先执行
+
+即：useEffect 的执行时机是浏览器完成渲染之后，而 useLayoutEffect 的执行时机是浏览器把内容真正渲染到界面之前，和 componentDidMount 等价
+
+使用场景差异：
+
+- useEffect 大部分使用于异步请求，如 api 请求
+- useLayoutEffect 用于 dom 操作，解决页面闪烁问题
+
+##### 8、hooks 原理
+
+[原理](https://juejin.cn/post/6944863057000529933)
+
+##### 9、手写 hooks
+
+- 实现 redux
+
+思路：
+
+1. redux 2 大功能，第一是 reducer 的状态维护，第二是实现状态传递
+2. 可以使用 useReducer 实现 reducer 状态维护
+3. 使用 useContext 实现状态传递
+
+- 实现 reducer==》initState&reducer&action
+
+```
+const actionType = {
+    INSREMENT: 'INSREMENT',
+    DECREMENT: 'DECREMENT',
+}
+
+
+export const add = (value: number) => {
+    return {
+        type: actionType.INSREMENT,
+        payload: value
+    }
+}
+
+export const dec = (value: number) => {
+    return {
+        type: actionType.DECREMENT,
+        payload: value
+    }
+}
+
+export const init = {
+    count: 0
+}
+
+export const reducer = (state: any, action: any,) => {
+    switch (action.type) {
+        case actionType.INSREMENT:
+            return { count: state.count + action.payload };
+        case actionType.DECREMENT:
+            return { count: state.count - action.payload };
+        default:
+            throw new Error();
+    }
+
+}
+
+```
+
+实现状态传递
+
+```
+//Parent.tsx
+const  Context = creatContext();//创建一个Context实例
+
+const [state,dispatch] = useReducer(reducer,init)//将dispatch作为值传递下去
+
+
+<Context.Provider
+  value={{
+    state,
+    dispatch,
+  }}
+>
+  <Child />
+</Context.Provider>
+
+//Child.tsx
+
+const context: any = useContext(Context);
+return (
+  <div>
+    <h1>Now: {context.state.count}</h1>
+    <button onClick={() => context.dispatch(add(2))}>add 2</button>
+  </div>
+);
+
+```
+
+- 实现 useState 回调
+
+```
+export const useStateCb = (init: any) => {
+    const [count, setCount] = useState(init);
+    const ref: any = useRef();
+    useEffect(() => {
+        ref.current && ref.current(count)
+    }, [count])
+
+    const mySetCount = (value: any, cb: any) => {
+        setCount(value);
+        ref.current = cb;
+    }
+    return [count, mySetCount]
+}
+```
+
+- 实现 useTitle
+
+```
+
+export const useTitle = (title: string) => {
+  useEffect(() => {
+    document.title = title;
+  },[])
+}
+```
+
+- 实现 useSize
+
+```
+const getSize = ()=>{
+  retutn {
+    innerHeight: window.innerHeight,
+    innerWidth: window.innerWidth,
+    outerHeight: window.outerHeight,
+    outerWidth: window.outerWidth
+  }
+}
+
+export const useSize = (title: string) => {
+
+  const  [size,setSize] = useState(getSize());
+
+  const handleResize = useCallback(()=>{
+      setSize(getSize())
+  },[])
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return(()=>{
+      window.removeEventListener("resize", handleResize);
+    })
+  },[])
+  return size
+}
+
+
+```
+
+- 实现 强制 update， useUpdate
+
+- 实现 useScroll
+
 ##### 相关文章
 
 [精读《useEffect 完全指南》](https://segmentfault.com/a/1190000018639033)
+
+[30 分钟精通 React Hooks](https://juejin.cn/post/6844903709927800846)
+
+[hook 造轮子](https://github.com/ascoders/weekly/blob/v2/080.%E7%B2%BE%E8%AF%BB%E3%80%8A%E6%80%8E%E4%B9%88%E7%94%A8%20React%20Hooks%20%E9%80%A0%E8%BD%AE%E5%AD%90%E3%80%8B.md)

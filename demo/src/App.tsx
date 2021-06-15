@@ -2,6 +2,7 @@ import * as React from "react";
 import { Tree, getMirrorTree } from "./Tree";
 import { LinkedList } from "./LinkdedList";
 import Example from "./hooks/index";
+import Redux from "./hooks/redux";
 
 export default class App extends React.Component<any> {
   componentDidMount() {
@@ -30,6 +31,7 @@ export default class App extends React.Component<any> {
   render() {
     return (
       <div>
+        {/* <Redux /> */}
         <Example />
       </div>
     );
