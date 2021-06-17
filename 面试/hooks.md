@@ -148,48 +148,45 @@ useLayoutEffect 与 useEffect 功能 99%差不多，主要差别是：
 
 - 实现 reducer==》initState&reducer&action
 
-```
+```js
 const actionType = {
-    INSREMENT: 'INSREMENT',
-    DECREMENT: 'DECREMENT',
-}
-
+  INSREMENT: "INSREMENT",
+  DECREMENT: "DECREMENT",
+};
 
 export const add = (value: number) => {
-    return {
-        type: actionType.INSREMENT,
-        payload: value
-    }
-}
+  return {
+    type: actionType.INSREMENT,
+    payload: value,
+  };
+};
 
 export const dec = (value: number) => {
-    return {
-        type: actionType.DECREMENT,
-        payload: value
-    }
-}
+  return {
+    type: actionType.DECREMENT,
+    payload: value,
+  };
+};
 
 export const init = {
-    count: 0
-}
+  count: 0,
+};
 
-export const reducer = (state: any, action: any,) => {
-    switch (action.type) {
-        case actionType.INSREMENT:
-            return { count: state.count + action.payload };
-        case actionType.DECREMENT:
-            return { count: state.count - action.payload };
-        default:
-            throw new Error();
-    }
-
-}
-
+export const reducer = (state: any, action: any) => {
+  switch (action.type) {
+    case actionType.INSREMENT:
+      return { count: state.count + action.payload };
+    case actionType.DECREMENT:
+      return { count: state.count - action.payload };
+    default:
+      throw new Error();
+  }
+};
 ```
 
-实现状态传递
+- 实现状态传递
 
-```
+```js
 //Parent.tsx
 const  Context = creatContext();//创建一个Context实例
 
@@ -219,36 +216,35 @@ return (
 
 - 实现 useState 回调
 
-```
+```js
 export const useStateCb = (init: any) => {
-    const [count, setCount] = useState(init);
-    const ref: any = useRef();
-    useEffect(() => {
-        ref.current && ref.current(count)
-    }, [count])
+  const [count, setCount] = useState(init);
+  const ref: any = useRef();
+  useEffect(() => {
+    ref.current && ref.current(count);
+  }, [count]);
 
-    const mySetCount = (value: any, cb: any) => {
-        setCount(value);
-        ref.current = cb;
-    }
-    return [count, mySetCount]
-}
+  const mySetCount = (value: any, cb: any) => {
+    setCount(value);
+    ref.current = cb;
+  };
+  return [count, mySetCount];
+};
 ```
 
 - 实现 useTitle
 
-```
-
+```js
 export const useTitle = (title: string) => {
   useEffect(() => {
     document.title = title;
-  },[])
-}
+  }, []);
+};
 ```
 
 - 实现 useSize
 
-```
+```js
 const getSize = ()=>{
   retutn {
     innerHeight: window.innerHeight,
@@ -279,7 +275,94 @@ export const useSize = (title: string) => {
 
 - 实现 强制 update， useUpdate
 
-- 实现 useScroll
+```js
+export const useUpdate = () => {
+
+  const  [,setUpdate] = useState();
+
+  const update = useCallback(()=>{
+      setUpdate(now Date())
+  },[])
+  return update
+}
+
+```
+
+- 监测页面是否可见、当前是否离线、网速
+
+  - 判断是否可见
+
+  ```js
+  function getVisibility() {
+    if (typeof document === "undefined") return true;
+    return document.visibilityState;
+  }
+  //事件名称：visibilitychange
+  ```
+
+  - 判断是否离线
+
+  ```js
+  function getOnlineStatus() {
+    return typeof navigator !== "undefined" &&
+      typeof navigator.onLine === "boolean"
+      ? navigator.onLine
+      : true;
+  }
+  //事件名称：online、offline
+  ```
+
+  - 获取网速
+
+  ```js
+  function getConnection() {
+    return (
+      navigator.connection ||
+      navigator.mozConnection ||
+      navigator.webkitConnection
+    );
+  }
+  //事件名称：  connection.addEventListener("change", updateConnectionStatus);
+  ```
+
+  - 实现逻辑
+
+  ```js
+  export const useEvent = (title: string) => {
+    const [value, setValue] = useState(getValue());
+    const handleEvent = useCallback(() => {
+      setValue(getValue());
+    }, []);
+    useEffect(() => {
+      window.addEventListener("eventName", handleEvent);
+      return () => {
+        window.removeEventListener("eventName", handleEvent);
+      };
+    }, []);
+    return value;
+  };
+  ```
+
+- 实现懒加载
+
+  ```js
+  export const useLazyLoad = (ref) => {
+    useEffect(() => {
+      let lazyImageObserver = new IntersectionObserver((entries, observer) => {
+        entries.forEach((entry, index) => {
+          let lazyImage = entry.target;
+          // 相交率，默认是相对于浏览器视窗
+          if (entry.intersectionRatio > 0) {
+            lazyImage.src = lazyImage.dataset.src;
+            // 当前图片加载完之后需要去掉监听
+            lazyImageObserver.unobserve(lazyImage);
+          }
+        });
+      });
+      lazyImageObserver.observe(ref.current);
+    }, []);
+  };
+  ```
 
 ##### 相关文章
 
@@ -288,3 +371,5 @@ export const useSize = (title: string) => {
 [30 分钟精通 React Hooks](https://juejin.cn/post/6844903709927800846)
 
 [hook 造轮子](https://github.com/ascoders/weekly/blob/v2/080.%E7%B2%BE%E8%AF%BB%E3%80%8A%E6%80%8E%E4%B9%88%E7%94%A8%20React%20Hooks%20%E9%80%A0%E8%BD%AE%E5%AD%90%E3%80%8B.md)
+
+[轮子大全](https://github.com/rehooks/awesome-react-hooks)

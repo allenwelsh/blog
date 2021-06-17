@@ -268,7 +268,7 @@ Son.prototype.constructor = Son;
 ```
 
 
- function Son (name,color){
+function Son (name,color){
     Father.call(this,name)//相当于super,实现属性继承
     this.color = color;
 }
