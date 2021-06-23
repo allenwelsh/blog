@@ -588,3 +588,26 @@
 //   }
 //   return add;
 // }
+
+export function threeSum(sourceArr) {
+  let newArr = sourceArr.sort();
+  let index = 0;
+  let result = [];
+  while (sourceArr.length - 2 >= index) {
+    let divVal = -sourceArr[index];
+    let left = index + 1;
+    let right = sourceArr.length - 1;
+    while (left < right) {
+      let sumVal = sourceArr[left] + sourceArr[right];
+      if (sumVal > divVal) {
+        right--;
+      } else if (sumVal < divVal) {
+        left++;
+      } else {
+        result.push([index, left, right]);
+      }
+    }
+    index++;
+  }
+  return result;
+}

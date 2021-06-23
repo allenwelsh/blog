@@ -655,6 +655,8 @@ for (let i = 0; let len = arr.length;i<len;i++){
 
 ## 结论：break 能跳出所有 for for/in for/of 循环，但对于 forEach,map,every,some 是不可以的，这些只能跳出本次循环
 
+### 即：数组方法只能使用 return 跳出循环，for 类只能使用 break 和 continue
+
 - 手写一个单例
 
 ```
