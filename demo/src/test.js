@@ -611,3 +611,34 @@ export function threeSum(sourceArr) {
   }
   return result;
 }
+
+export var countSubstrings = function (s) {
+  let count = 0;
+  let mid = 0;
+  while (mid < s.length) {
+    let left = mid;
+    let right = mid;
+    while (left >= 0 || right < s.length) {
+      if (s[left] === s[right]) {
+        count++;
+        left--;
+        right++;
+      } else {
+        break;
+      }
+    }
+    let leftr = mid;
+    let rightr = mid + 1;
+    while (leftr >= 0 || rightr < s.length) {
+      if (s[leftr] === s[rightr]) {
+        count++;
+        leftr--;
+        rightr++;
+      } else {
+        break;
+      }
+    }
+    mid++;
+  }
+  return count;
+};
