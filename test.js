@@ -1,81 +1,53 @@
 //实现一个继承
 // 原型继承
-function Father(){
-    this.print = function(){}
-}
 
-function Son(){}
-
-Son.prototype = new Father()
-
-const son = new Son()
-son.print()
+const { createContext } = require("node:vm");
 
 //写一个订阅模式
-class EventEmit{
-    constructor(){
-        this.event = {}
+class EventEmit {
+    constructor () {
+        this.eventArr = [];
     }
-    on(eventName, callback){
-        if(this.event[eventName]){
-            this.event[eventName].push(callback)
-        }else{
-            this.event[eventName] = [callback]
-        }
+    add() {
+        this.eventArr.push(new Watch());
     }
-    emit(eventName, ...args){
-        if(this.event[eventName]){
-            this.event[eventName].forEach(fn=>fn.apply(this, args))
-        }
+    notic() {
+        const watch = New Watch(() => {});
     }
-    remove(eventName, callback){
-        this.event[eventName] = this.event[eventName].filter(fn=>fn!callback)
+}
+
+class Watch {
+    constructor (cb) {
+        this.callback = cb
+    }
+    update () {
+        this.callback()
     }
 }
 
 //写一个hooks实现类组件的this.setSate({a:1},cb)
-function useStateHook(obj){
-    const [state,setState] = useState();
-    const ref = useRef();
-    const fn = useCallback(
-        (state,cb) => {
-            setState(state);
-            ref.current = cb;
-        },
-        [],
-    )
-
-    useEffect(()=>{
-        ref.current();
-    },[state])
-    return [state,fn]
-
-}
-
-const [a,setA] = useState();
-
-const [b,setB] = useStateHook();
 
 
-setA(a);
+const [a,setA] = useState(initialState)
+setA(1)
 
-setB(2,(v)=>{
-    console.log(v)
+const [a,setB] = useStateCb();
+setB(1,(state)=>{
+    console.log(state)
 })
 
 //说一下用hooks实现一个小型react-redux思路
-<Provider value={store}></Provider>
-connect(mapStatetoProps,mapDispatchToProps)()
-useReucer()
 
-1.useContext()  context =React.createContext()
-2. context.Provider value={store,dispatch}
-
-3. const [storem, dispatch] = useReducer(reducer)
-4.[dispatch] useContext(context)
+创建context; createContext
 
 
-创建context 
+const context = createContext();
+
+<context.provider value={}>
+</context.provider>
+
+context.customer
+
 
 //给定一个非空字符串 s，最多删除一个字符。判断是否能成为回文字符串。
 //输入: "aba"
