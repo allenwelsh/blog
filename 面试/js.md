@@ -903,31 +903,3 @@ function outerFunction(condition) {
 递归优化思路：将运算部分放入参数部分
 
 [尾部优化](https://blog.csdn.net/laoxiaohang/article/details/113482849)
-
-- XSS 攻击： 跨站脚本攻击（Cross Site Script
-  就是注入恶意代码，从而获取用户 cookie 或者伪造登录内容，或者修改也面
-
-  - 攻击方式：
-    反射型
-    存储型
-    基于 DOM 型
-
-  - 防御方式：
-    cookie 设置设置为 httpOnly
-    不相信用户的输入做 html 转义（escapeHTML）
-
-  - XSS 攻击的两大要素：
-    - 用户提交恶意代码
-    - 浏览器执行恶意代码
-
-- CSRF 跨站请求伪造（Cross Site Request Forgery）
-
-  - 用户登录真实 a.html
-  - 引导用户点击 b.html
-  - b.html 会发起访问 a 的请求
-
-  - 防御方式：
-    - 同源（CSRF 大多数情况下来自第三方域名，但并不能排除本域发起。如果攻击者有权限在本域发布评论（含链接、图片等，统称 UGC））
-    - token+cookie
-
-[CSRF](https://juejin.cn/post/6844903689702866952#heading-20)
