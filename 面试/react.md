@@ -150,3 +150,90 @@ class Consumer extend React.PureComponent{
 ```
 
 [createContext 原理](https://zhuanlan.zhihu.com/p/34038469)
+
+#### 虚拟 DOM
+
+- react 为什么要采用虚拟 DOM ？
+
+  - 虚拟 DOM 更加结构化，方便与状态关联
+  - 采用虚拟 DOM 方便统一处理 DOM 更新、事件、属性操作等，同时统一做好兼容性
+  - 关于性能优化这点，其实虚拟 DOM 本并没没有优化性能，虚拟 DOM 最终也需要更新 dom，但是它帮我们做了很多关于操作 dom 的优化
+  - 本质来说它是提升开发效率，是我们开发更关注与业务，而不是 dom 操作
+
+- React 自定义组件为什么要大写？
+
+  - babel 在编译时会判断 JSX 中组件的首字母，当首字母为小写时，其被认定为原生 DOM 标签，createElement 的第一个变量被编译为字符串；当首字母为大写时，其被认定为自定义组件
+
+- react 如何将代码转换成了虚拟 DOM？
+
+  - jsx 文件是 createElement 的语法糖
+  - createElement 函数将代码转成虚拟 DOM 结构
+
+#### setState 执行过程
+
+#### 类组件生命周期（16.4）
+
+##### 首次渲染
+
+- constuctor
+- ~~componentWillMount~~
+- getDerivedStateFromProps
+- render
+- componentDidMount
+
+##### 更新
+
+- ~~componentWillReceiveProps~~
+- ~~componentWillUpdate~~
+- getDerivedStateFromProps
+- shouldComponentUpdate(不能调用 setState)
+- render(不能调用 setState)
+- getSnapshotBeforeUpdate(不能调用 setState)
+- componentDidUpdate
+
+##### fiber 影响
+
+##### 父子更新
+
+- Parent 组件： getDerivedStateFromProps()
+- Parent 组件： shouldComponentUpdate()
+- Parent 组件： render()
+- Child 组件： getDerivedStateFromProps()
+- Child 组件： shouldComponentUpdate()
+- Child 组件： render()
+- Child 组件： getSnapshotBeforeUpdate()
+- Parent 组件： getSnapshotBeforeUpdate()
+- Child 组件： componentDidUpdate()
+- Parent 组件： componentDidUpdate()
+
+##### getDerivedStateFromProps VS componentWillReceiveProps
+
+- componentWillReceiveProps 作用
+  - componentWillReceiveProps 在子组件更新前执行，初始化 render 时不执行,**如果仅子组件 state 改变时是不触发的**
+  - 一般用于接收父组件的 props 来更新子组件的 state（派生状态），通过调用 this.setState()来更新你的组件状态，旧的属性还是可以通过 this.props 来获取,这里调用更新状态是安全的，并不会触发额外的 render 调用
+  - 处理一些副作用
+- componentWillReceiveProps 缺点
+
+  - 父组件每次 render 导致子组件 re-render 的时候执行，就算此时 props 没有发生改变也会导致该方法执行
+  - 由于使用副作用可能会产生未知 bug
+  - 当外部多个属性在很短的时间间隔之内多次变化，就会导致 componentWillReceiveProps 被多次调用。这个调用并不会被合并，如果这次内容都会触发异步请求，那么可能会导致多个异步请求阻塞，而如果是 getDerivedStateFromProps 这个生命周期函数会在每次调用 render 之前被触发，react setState 操作是会通过 transaction 进行合并的，由此导致的更新过程是 batch 的，而 react 中大部分的更新过程的触发源都是 setState，所以 render 触发的频率并不会非常频繁
+
+- getDerivedStateFromProps(props, state) 作用
+
+  - **会在每次调用 render 方法之前调用**，在 setState() 后被调用，并且在初始挂载及后续更新时都会被调用。它应返回一个对象来更新 state，返回值应用于 state,不通过 setState 队列
+  - 是一个静态方法，不能调用组件实例（this）,不能产生副作用，负作用使用 componentDidUpdate
+  - 也不是很好用，限制多
+
+- 差异：
+
+  - 调用的时机差别
+  - 参数差别
+  - 原理差别
+
+- getSnapshotBeforeUpdate
+
+##### 消失的生命周期
+
+- componentWillMount
+- componentWillReceiveProps
+- componentWillUpdate
