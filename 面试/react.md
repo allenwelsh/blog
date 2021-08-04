@@ -237,3 +237,25 @@ class Consumer extend React.PureComponent{
 - componentWillMount
 - componentWillReceiveProps
 - componentWillUpdate
+
+##### fiber 理解
+
+- react 如果父组件有变化会更新父组件以下的所有组件
+- react 之前的更新过程是一次更新完成
+- react 更新时 GUI 线程被阻塞，无法刷新，会影响电话，也无法处理事件的回调
+- react 更新过程主要分为调和阶段和 commit 阶段，调和阶段主要是 diff 算法
+- diff 算法不管如何优化，本身都是需要递归遍历整个 dom 树，而堆栈形式的递归过程中是无法中断的
+- fiber 是一种与进程、线程同为程序执行过程或者说是一个调度过程，这个调度过程会把任务分片执行，使得 diff 过程可以分片执行
+- 这个调度过程一般由 requestIdleCallback 实现，但是 React 团队 polyfill 了这个 API，使其对比原生的浏览器兼容性更好且拓展了特性
+- fiber 的核心是可中断、可回复、优先级
+- 在 fiber 下调和过程不再是递归的堆栈遍历，而且链表结构，保证 fiber 调度恢复
+- 影响到 will 相关生命周期
+
+[fiber](https://segmentfault.com/a/1190000039189408)
+
+##### 事件代理
+
+- 无法实现事件冒泡的
+  - mouseleave&mouseenter
+  - blur & focus
+  - scrool
