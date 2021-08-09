@@ -642,3 +642,24 @@ export var countSubstrings = function (s) {
   }
   return count;
 };
+
+function show() {
+  console.log(1111);
+}
+
+function throttle(fn, timer) {
+  //节流，延迟执行时间
+  let pre = 0;
+
+  return function () {
+    var now = new Date();
+    if (now - pre > timer) {
+      fn.call(this);
+      pre = now;
+    }
+  };
+}
+
+let newShow = throttle(show, 1000);
+
+setInterval(newShow, 100);

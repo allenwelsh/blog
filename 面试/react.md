@@ -191,8 +191,6 @@ class Consumer extend React.PureComponent{
 - getSnapshotBeforeUpdate(不能调用 setState)
 - componentDidUpdate
 
-##### fiber 影响
-
 ##### 父子更新
 
 - Parent 组件： getDerivedStateFromProps()
@@ -252,6 +250,7 @@ class Consumer extend React.PureComponent{
 - 影响到 will 相关生命周期
 
 [fiber](https://segmentfault.com/a/1190000039189408)
+[fiber2](https://segmentfault.com/a/1190000022995622)
 
 ##### 事件代理
 
@@ -259,3 +258,12 @@ class Consumer extend React.PureComponent{
   - mouseleave&mouseenter
   - blur & focus
   - scrool
+
+##### 更新机制
+
+- 执行 setState 时，先将 state 存入**当前** 组件的 state 暂存队列，同时判断**React**是否处于更新周期
+- 如果处于更新周期，将该组件加入到更新队列中，如果不处于更新周期，启动更新周期，同时加入更新队列
+- 调用 react 批事务机制，遍历待更新组件队列依次执行更新
+- 将组件中的 state 暂存队列合并，获取最终 state,同时清空暂存队列
+- 执行 render 及 diff
+- 执行 commit
