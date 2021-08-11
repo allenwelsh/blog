@@ -4,13 +4,13 @@ import { LinkedList } from "./LinkdedList";
 import Example from "./hooks/index";
 // import Redux from "./hooks/redux";
 import Test2 from "./hooks/test2";
-import { threeSum } from "./tsTest";
+// import { threeSum } from "./tsTest";
 
 export default class App extends React.Component<any> {
   componentDidMount() {
     // this.testLinkedList();
-    const nums = [-1, 0, 1, 2, -1, -4];
-    console.log(111, threeSum(nums));
+    // const nums = [-1, 0, 1, 2, -1, -4];
+    // console.log(111, threeSum(nums));
   }
   // testLinkedList() {
   //   let list = new LinkedList(1, "1");
@@ -37,7 +37,6 @@ export default class App extends React.Component<any> {
       <div>
         {/* <Redux /> */}
         <Example />
-
         {/* <Test2 /> */}
       </div>
     );
