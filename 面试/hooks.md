@@ -18,9 +18,25 @@
 - hooks 本质是一个链表，在每次执行函数组件的时候，会去查询链表赋予变量新的值
 - hook 更好造轮子，尤其是与生命周期相关的轮子（1、不用关注生命周期，逻辑能集中，2、方便在组件销毁时移除副作用）
 
-##### 3、react 优化
+##### 3、useState&&useEffect
 
-- 尽量减少组件重新 render，render 调和过程是最耗性能的
+- useState 有 3 大特性，1、更新函数是异步；2、初始值有 Lazy inital state;3、当所有 state 没有变化时候不会主动产生 re-render
+- 需要深入理解 setXX()参数为常数和函数的差异，如果想合并一定需要采用 setCount(count=>count+1);
+- Lazy inital state，如果初始化是函数（不是立即执行函数），则需要计算出值，而且只执行一次
+
+```js
+const getV = () => {
+  console.log(0); //只打印一次
+  return 1;
+};
+const [count, setCount] = useState(getV);
+useEffect(() => {
+  console.log(11, count);
+  return () => {
+    console.log(222, count); //第一不打印，之后每次先与11打印
+  };
+});
+```
 
 ##### 4、 useRef
 
@@ -53,13 +69,10 @@ let preValue = usePrevious(count)
 
 > Returns a memoized callback.
 
-```
-const memoizedCallback = useCallback(
-  () => {
-    doSomething(a, b);
-  },
-  [a, b],
-);
+```js
+const memoizedCallback = useCallback(() => {
+  doSomething(a, b);
+}, [a, b]);
 ```
 
 官网解释是返回一个缓存回调
@@ -78,8 +91,7 @@ useMemo 和 useCallback 都是为了减少：
 - 减少重新 render 的次数。因为 React 最耗费性能的就是调和过程（reconciliation），只要不 render 就不会触发 reconciliation
 - 减少计算量，尤其是耗时的计算
 
-```
-
+```js
 function updateCallback(callback, deps) {
   const hook = updateWorkInProgressHook();
   const nextDeps = deps === undefined ? null : deps;
@@ -112,7 +124,6 @@ function updateMemo(nextCreate, deps) {
   hook.memoizedState = [nextValue, nextDeps];
   return nextValue;
 }
-
 ```
 
 [useMemo 与 useCallback 区别](https://juejin.cn/post/6844904001998176263)

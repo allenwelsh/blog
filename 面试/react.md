@@ -218,7 +218,7 @@ class Consumer extend React.PureComponent{
 
 - getDerivedStateFromProps(props, state) 作用
 
-  - **会在每次调用 render 方法之前调用**，在 setState() 后被调用，并且在初始挂载及后续更新时都会被调用。它应返回一个对象来更新 state，返回值应用于 state,不通过 setState 队列
+  - **会在每次调用 render 方法之前调用**，在 setState() 后会被调用，并且在初始挂载及后续更新时都会被调用。它应返回一个对象来更新 state，返回值应用于 state,不通过 setState 队列
   - 是一个静态方法，不能调用组件实例（this）,不能产生副作用，负作用使用 componentDidUpdate
   - 也不是很好用，限制多
 
