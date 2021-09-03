@@ -1,0 +1,5 @@
+{
+  "port": 8003,
+  "files": ["./"],
+  "server": { "baseDir": "./" }
+}
