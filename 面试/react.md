@@ -267,3 +267,7 @@ class Consumer extend React.PureComponent{
 - 将组件中的 state 暂存队列合并，获取最终 state,同时清空暂存队列
 - 执行 render 及 diff
 - 执行 commit
+
+[必须要会的 50 个 React 面试题](https://juejin.cn/post/6844903806715559943#heading-43)
+[2020 前端 React 面试](https://juejin.cn/post/6844903988073070606)
+[2020 前端 React 面试 2](https://juejin.cn/post/6844904093492707336#heading-51)

@@ -384,3 +384,6 @@ export const useUpdate = () => {
 [hook 造轮子](https://github.com/ascoders/weekly/blob/v2/080.%E7%B2%BE%E8%AF%BB%E3%80%8A%E6%80%8E%E4%B9%88%E7%94%A8%20React%20Hooks%20%E9%80%A0%E8%BD%AE%E5%AD%90%E3%80%8B.md)
 
 [轮子大全](https://github.com/rehooks/awesome-react-hooks)
+
+[hook 问题](https://juejin.cn/post/6844903985338400782#heading-23)
+[深入理解 React useLayoutEffect 和 useEffect 的执行时机](https://juejin.cn/post/6844904183666049032)

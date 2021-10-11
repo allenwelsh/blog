@@ -9,6 +9,8 @@ Worker 线程一旦新建成功，就会始终运行，不会被主线程上的�
   - 同源限制：分配给 Worker 线程运行的脚本文件，必须与主线程的脚本文件同源
   - 通信：Worker 线程和主线程不在同一个上下文环境，它们不能直接通信，必须通过消息完成。
   - 脚本执行：Worker 线程不能执行 alert()方法和 confirm()方法，但可以使用 XMLHttpRequest 对象发出 AJAX 请求
+- WebWorker 只属于某个页面，不会和其他页面的 Render 进程（浏览器内核进程）共享
+  所以 Chrome 在 Render 进程中（每一个 Tab 页就是一个 render 进程）创建一个新的线程来运行 Worker 中的 JavaScript 程序。
 
 ```js
 //main.js
