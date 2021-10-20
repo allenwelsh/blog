@@ -140,7 +140,7 @@ usedJSHeapSize：The currently active segment of JS heap, in bytes.
 
 重定向 (redirectStart 和 redirectEnd )，DNS 查询(domainLookupStart 和 domainLookupEnd)，TCP 握手 (connectStart 和 connectEnd)， 响应 (responseStart 和 responseEnd)。 这段例子也计算了从开始获取资源和请求开始（分别为 fetchStart and requestStart）到响应结束 (responseEnd) 的时间
 
-```
+```js
 function calculate_load_times() {
   // Check performance support
   if (performance === undefined) {
@@ -151,12 +151,14 @@ function calculate_load_times() {
   // Get a list of "resource" performance entries
   var resources = performance.getEntriesByType("resource");
   if (resources === undefined || resources.length <= 0) {
-    console.log("= Calculate Load Times: there are NO `resource` performance records");
+    console.log(
+      "= Calculate Load Times: there are NO `resource` performance records"
+    );
     return;
   }
 
   console.log("= Calculate Load Times");
-  for (var i=0; i < resources.length; i++) {
+  for (var i = 0; i < resources.length; i++) {
     console.log("== Resource[" + i + "] - " + resources[i].name);
     // Redirect time
     var t = resources[i].redirectEnd - resources[i].redirectStart;
@@ -171,7 +173,10 @@ function calculate_load_times() {
     console.log("... TCP time = " + t);
 
     // Secure connection time
-    t = (resources[i].secureConnectionStart > 0) ? (resources[i].connectEnd - resources[i].secureConnectionStart) : "0";
+    t =
+      resources[i].secureConnectionStart > 0
+        ? resources[i].connectEnd - resources[i].secureConnectionStart
+        : "0";
     console.log("... Secure connection time = " + t);
 
     // Response time
@@ -179,19 +184,27 @@ function calculate_load_times() {
     console.log("... Response time = " + t);
 
     // Fetch until response end
-    t = (resources[i].fetchStart > 0) ? (resources[i].responseEnd - resources[i].fetchStart) : "0";
+    t =
+      resources[i].fetchStart > 0
+        ? resources[i].responseEnd - resources[i].fetchStart
+        : "0";
     console.log("... Fetch until response end time = " + t);
 
     // Request start until reponse end
-    t = (resources[i].requestStart > 0) ? (resources[i].responseEnd - resources[i].requestStart) : "0";
+    t =
+      resources[i].requestStart > 0
+        ? resources[i].responseEnd - resources[i].requestStart
+        : "0";
     console.log("... Request start until response end time = " + t);
 
     // Start until reponse end
-    t = (resources[i].startTime > 0) ? (resources[i].responseEnd - resources[i].startTime) : "0";
+    t =
+      resources[i].startTime > 0
+        ? resources[i].responseEnd - resources[i].startTime
+        : "0";
     console.log("... Start until response end time = " + t);
   }
 }
-
 ```
 
 - 计算资源大小
