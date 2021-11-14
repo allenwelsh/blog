@@ -148,15 +148,14 @@ class MyPromise(){
 let newFn = debounce(fn, 300);
 function debounce(fn, delay) {
   let timer = null;
-  let
   return function () {
-      if(timer){
-        clearTimeout(timer)
-      }else{
-        timer =  setTimeout(()=>{
-            fn(arguments)
-        },delay)
-      }
+    if (timer) {
+      clearTimeout(timer);
+    } else {
+      timer = setTimeout(() => {
+        fn(arguments);
+      }, delay);
+    }
   };
 }
 ```
